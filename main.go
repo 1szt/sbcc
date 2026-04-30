@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"sbcc/internal/home"
-	"sbcc/internal/sb"
+	"sbcc/internal/sub"
 	"sbcc/internal/web"
 )
 
@@ -19,7 +19,7 @@ func main() {
 
 	// 功能模块启动
 	home.Run()
-	sb.Run()
+	sub.Run()
 
 	// 阻塞主进程
 	select {}

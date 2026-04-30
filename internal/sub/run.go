@@ -1,4 +1,9 @@
-package sb
+package sub
+
+// 依赖模块 ：web
+// 订阅api模块
+// 订阅api模块负责处理用户访问订阅api路径的请求
+// 挂载路径："/api/sub"
 
 import (
 	"fmt"
@@ -60,6 +65,6 @@ func Run() {
 		http.ServeFile(w, r, absPath)
 	})
 
-	web.Mux.Mount("/sb", r)
-	fmt.Println("🎉 [SB] 订阅模块 加载完成！")
+	web.Mux.Mount("/api/sub", r)
+	fmt.Println("🎉 [Sub] 订阅api模块 加载完成！")
 }

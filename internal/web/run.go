@@ -1,9 +1,13 @@
 package web
 
+// Web 引擎启动
+// 使用 chi 路由库
+
 import (
 	"fmt"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	"github.com/go-chi/httprate"
 	"log"
 	"net/http"
 	"time"
@@ -13,8 +17,13 @@ var Mux = chi.NewRouter()
 
 func Run() {
 	// 全局中间件设置
-	Mux.Use(middleware.Recoverer) // 放在最外层捕获所有内部 panic
+
+	// 捕获所有内部 panic
+	Mux.Use(middleware.Recoverer)
+	// 记录日志
 	Mux.Use(middleware.Logger)
+	// 限制每个IP每分钟最多100个请求
+	Mux.Use(httprate.LimitByIP(100, 1*time.Minute))
 
 	// 创建错误探测信封
 	errChan := make(chan error, 1)

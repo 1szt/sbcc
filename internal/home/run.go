@@ -1,5 +1,10 @@
 package home
 
+// 依赖模块 ：web
+// 主页模块启动
+// 主页模块负责处理用户访问根路径的请求
+// 挂载路径："/"
+
 import (
 	"fmt"
 	"github.com/go-chi/chi/v5"
