@@ -19,7 +19,7 @@ import (
 func Run() {
 	r := chi.NewRouter()
 	r.Group(func(r chi.Router) {
-		r.Get("/", CreateSubscription)
+		r.Get("/", sub)
 	})
 
 	web.Mux.Mount("/api/sub", r)
@@ -27,7 +27,7 @@ func Run() {
 
 }
 
-func CreateSubscription(w http.ResponseWriter, r *http.Request) {
+func sub(w http.ResponseWriter, r *http.Request) {
 	const OriginalConfigPath = "./data/conf/clash.yaml"
 
 	absPath, _ := filepath.Abs(OriginalConfigPath)
