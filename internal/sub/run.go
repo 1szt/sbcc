@@ -18,53 +18,58 @@ import (
 
 func Run() {
 	r := chi.NewRouter()
-
-	const OriginalConfigPath = "./data/conf/clash.yaml"
-
-	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		absPath, _ := filepath.Abs(OriginalConfigPath)
-
-		info, err := os.Stat(absPath)
-		if err != nil || info.Size() == 0 {
-			w.WriteHeader(http.StatusNotFound)
-			fmt.Fprintf(w, "错误：配置文件不存在或为空。路径：%s", absPath)
-			return
-		}
-
-		// 配置文件显示名称
-		filename := "SB控制中心"
-		// 更新间隔（单位: 小时）
-		update := "1"
-		// 流量信息(单位: 字节)
-		total := 1024 * 1024 * 1024 * 222
-		upload := 1024 * 1024 * 500
-		download := 1024 * 1024 * 1024 * 5
-		// 到期时间(时间戳)
-		expire := time.Date(2077, 1, 1, 0, 0, 0, 0, time.Local).Unix()
-		weburl := "http://localhost:9081"
-
-		// Header 文档
-		//https://www.clashverge.dev/guide/url_schemes.html
-
-		// 配置文件名
-		w.Header().Set("content-disposition", fmt.Sprintf("attachment; filename*=UTF-8''%s", url.PathEscape(filename)))
-
-		// 更新间隔
-		w.Header().Set("profile-update-interval", update)
-
-		// 流量信息(单位: 字节)、到期信息(时间戳)
-		w.Header().Set("subscription-userinfo", fmt.Sprintf("upload=%d; download=%d; total=%d; expire=%d", upload, download, total, expire))
-
-		// 首页URL
-		w.Header().Set("profile-web-page-url", weburl)
-
-		// 基础 Header 设置
-		w.Header().Set("content-type", "application/x-yaml; charset=utf-8")
-
-		// 发送文件
-		http.ServeFile(w, r, absPath)
+	r.Group(func(r chi.Router) {
+		r.Get("/", CreateSubscription)
 	})
 
 	web.Mux.Mount("/api/sub", r)
 	fmt.Println("🎉 [Sub] 订阅api模块 加载完成！")
+
+}
+
+func CreateSubscription(w http.ResponseWriter, r *http.Request) {
+	const OriginalConfigPath = "./data/conf/clash.yaml"
+
+	absPath, _ := filepath.Abs(OriginalConfigPath)
+
+	info, err := os.Stat(absPath)
+	if err != nil || info.Size() == 0 {
+		w.WriteHeader(http.StatusNotFound)
+		fmt.Fprintf(w, "错误：配置文件不存在或为空。路径：%s", absPath)
+		return
+	}
+
+	// 配置文件显示名称
+	filename := "SB控制中心"
+	// 更新间隔（单位: 小时）
+	update := "1"
+	// 流量信息(单位: 字节)
+	total := 1024 * 1024 * 1024 * 222
+	upload := 1024 * 1024 * 500
+	download := 1024 * 1024 * 1024 * 5
+	// 到期时间(时间戳)
+	expire := time.Date(2077, 1, 1, 0, 0, 0, 0, time.Local).Unix()
+	weburl := "http://localhost:9081"
+
+	// Header 文档
+	//https://www.clashverge.dev/guide/url_schemes.html
+
+	// 配置文件名
+	w.Header().Set("content-disposition", fmt.Sprintf("attachment; filename*=UTF-8''%s", url.PathEscape(filename)))
+
+	// 更新间隔
+	w.Header().Set("profile-update-interval", update)
+
+	// 流量信息(单位: 字节)、到期信息(时间戳)
+	w.Header().Set("subscription-userinfo", fmt.Sprintf("upload=%d; download=%d; total=%d; expire=%d", upload, download, total, expire))
+
+	// 首页URL
+	w.Header().Set("profile-web-page-url", weburl)
+
+	// 基础 Header 设置
+	w.Header().Set("content-type", "application/x-yaml; charset=utf-8")
+
+	// 发送文件
+	http.ServeFile(w, r, absPath)
+
 }
