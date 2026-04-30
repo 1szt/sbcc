@@ -21,6 +21,8 @@ func main() {
 	home.Run()
 	sub.Run()
 
+	// gin.Run()
+
 	// 阻塞主进程
 	select {}
 }

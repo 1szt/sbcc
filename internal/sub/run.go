@@ -48,7 +48,7 @@ func sub(w http.ResponseWriter, r *http.Request) {
 	upload := 1024 * 1024 * 500
 	download := 1024 * 1024 * 1024 * 5
 	// 到期时间(时间戳)
-	expire := time.Date(2077, 1, 1, 0, 0, 0, 0, time.Local).Unix()
+	expire := time.Date(2077, 12, 10, 0, 0, 0, 0, time.Local).Unix()
 	weburl := "http://localhost:9081"
 
 	// Header 文档
