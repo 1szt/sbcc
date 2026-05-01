@@ -5,6 +5,7 @@ import (
 	"modbus/home"
 	"modbus/sub"
 	"modbus/web"
+	"modbus/db"
 )
 
 func main() {
@@ -16,6 +17,9 @@ func main() {
 
 	// Web 引擎启动
 	web.Run()
+
+	// 数据库模块启动
+	db.Run()
 
 	// 功能模块启动
 	home.Run()
