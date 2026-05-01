@@ -44,9 +44,11 @@ func sub(w http.ResponseWriter, r *http.Request) {
 	// 更新间隔（单位: 小时）
 	update := "1"
 	// 流量信息(单位: 字节)
-	total := 1024 * 1024 * 1024 * 222
-	upload := 1024 * 1024 * 500
-	download := 1024 * 1024 * 1024 * 5
+
+	// 使用int64类型表示流量信息，避免溢出
+	total := int64(1024 * 1024 * 1024 * 222)
+	upload := int64(1024 * 1024 * 222)
+	download := int64(1024 * 1024 * 500)
 	// 到期时间(时间戳)
 	expire := time.Date(2077, 12, 10, 0, 0, 0, 0, time.Local).Unix()
 	weburl := "http://localhost:9081"
