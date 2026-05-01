@@ -8,11 +8,11 @@ package sub
 import (
 	"fmt"
 	"github.com/go-chi/chi/v5"
+	"modbus/web"
 	"net/http"
 	"net/url"
 	"os"
 	"path/filepath"
-	"sbcc/internal/web"
 	"time"
 )
 
@@ -28,7 +28,7 @@ func Run() {
 }
 
 func sub(w http.ResponseWriter, r *http.Request) {
-	const OriginalConfigPath = "./data/conf/clash.yaml"
+	const OriginalConfigPath = "data/conf/clash.yaml"
 
 	absPath, _ := filepath.Abs(OriginalConfigPath)
 

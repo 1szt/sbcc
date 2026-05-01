@@ -8,7 +8,7 @@ import (
 	"fmt"
 	"github.com/go-chi/chi/v5"
 	"net/http"
-	"sbcc/internal/web"
+	"modbus/web"
 )
 
 func Run() {

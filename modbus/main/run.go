@@ -2,9 +2,9 @@ package main
 
 import (
 	"fmt"
-	"sbcc/internal/home"
-	"sbcc/internal/sub"
-	"sbcc/internal/web"
+	"modbus/home"
+	"modbus/sub"
+	"modbus/web"
 )
 
 func main() {

@@ -3,7 +3,7 @@ package gin
 import (
 	"fmt"
 	"net/http"
-	"sbcc/internal/web"
+	"modbus/web"
 
 	"github.com/gin-gonic/gin"
 )
