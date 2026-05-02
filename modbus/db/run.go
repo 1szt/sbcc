@@ -3,6 +3,7 @@ package db
 import (
 	"database/sql"
 	"fmt"
+	"modbus/env"
 	"time"
 
 	_ "github.com/go-sql-driver/mysql" // 换成你实际使用的驱动
@@ -11,7 +12,20 @@ import (
 var DB *sql.DB
 
 func Run() {
-	dsn := "root:123456@tcp(127.0.0.1:3306)/my_db?parseTime=True"
+	// 一次性初始化数据库配置
+	env.Init([][]string{
+		// { "KEY", "DEFAULT", "COMMENT..." }
+		{"DB_TYPE", "sqlite", "数据库驱动类型", "支持: sqlite (文件模式), pgsql/mysql (服务器模式)"},
+		{"DB_NAME", "trade_data.db", "数据库名", "若使用 sqlite，此处为文件名；若使用 pgsql/mysql，此处为数据库实例名"},
+
+		// 以下为网络数据库专用配置
+		{"DB_HOST", "127.0.0.1", "数据库地址", "仅针对 pgsql/mysql，sqlite 模式下会忽略此项"},
+		{"DB_PORT", "5432", "数据库端口", "pgsql 默认 5432, mysql 默认 3306, sqlite 忽略"},
+		{"DB_USER", "postgres", "数据库用户名"},
+		{"DB_PASSWORD", "your_password", "数据库密码"},
+	})
+
+	dsn := "123456@tcp(127.0.0.1:3306)/my_db?parseTime=True"
 
 	var err error
 	DB, err = sql.Open("mysql", dsn)

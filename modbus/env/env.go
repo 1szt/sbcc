@@ -1,8 +1,9 @@
-package config
+package env
 
 import (
 	"bufio"
 	"fmt"
+
 	"os"
 	"path/filepath"
 	"strings"
@@ -10,7 +11,18 @@ import (
 
 const fileName = "data/.env"
 
-// Init 初始化配置文件
+// Init 初始化环境配置系统
+// 
+// 核心逻辑：
+// 1. [发现]：检查 data/.env 是否存在，不存在则自动创建。
+// 2. [对比]：读取现有文件，若参数(Key)已存在，则保持原样
+// 3. [追加]：若参数(Key)缺失，则按顺序在文件尾部追加【注释+配置】。
+// 
+// 数组输入规范：
+//    { "KEY", "VALUE", "描述1", "描述2", "..." }
+//    - 下标[0]: 环境变量名 (如 "WEB_PORT")
+//    - 下标[1]: 默认数值 (如 "9081")
+//    - 下标[2+]: 任意多行注释，将以 # 开头写入文件
 func Init(config [][]string) {
 	// 1. 确保目录存在（创建 data 文件夹）
 	dir := filepath.Dir(fileName)
@@ -37,9 +49,15 @@ func Init(config [][]string) {
 	// 4. 遍历配置数组
 	for i := 0; i < len(config); i++ {
 		line := config[i]
-		comment := line[0] // 注释
-		key := line[1]     // 参数名
-		val := line[2]     // 数据内容
+
+		// 从line2开始遍历提取注释
+		comment := ""
+		for j := 2; j < len(line); j++ {
+			comment += "# " + line[j] + "\n"
+		}
+
+		key := line[0] // 参数名
+		val := line[1] // 数据内容
 
 		// 检查 line[1] (Key) 是否已存在
 		if strings.Contains(contentStr, key+"=") {
@@ -49,7 +67,7 @@ func Init(config [][]string) {
 
 		// 如果没有，则在文件尾部顺序写入
 		// 按照你要求的格式：#注释 \n Key=Value \n\n
-		data := fmt.Sprintf("#%s\n%s=%s\n\n", comment, key, val)
+		data := fmt.Sprintf("%s%s=%s\n\n", comment, key, val)
 
 		_, err := f.WriteString(data)
 		if err != nil {
@@ -58,7 +76,14 @@ func Init(config [][]string) {
 	}
 }
 
+
+
+
 // Get 读取值：环境变量优先级高于配置文件
+// 
+// 1. [环境变量]：先从系统环境变量中获取
+// 2. [配置文件]：如果环境变量中没有，再从配置文件中读取
+// 读取到的值为空时，返回空字符串
 func Get(key string) string {
 	// 1. 【新增】首先尝试从系统环境变量获取
 	// 比如你在 Linux 下执行: WEB_PORT=8080 ./main
