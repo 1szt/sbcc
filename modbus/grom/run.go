@@ -9,9 +9,9 @@ import (
 	_ "github.com/glebarez/go-sqlite"  // 纯 Go SQLite
 	_ "github.com/go-sql-driver/mysql" // 纯 Go MySQL
 	_ "github.com/jackc/pgx/v5/stdlib" // 纯 Go PgSQL
+	"github.com/glebarez/sqlite"
 	"gorm.io/driver/mysql"
 	"gorm.io/driver/postgres"
-	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
 
