@@ -6,10 +6,10 @@ import (
 	"modbus/sql"
 	"os"
 
-	_ "github.com/glebarez/go-sqlite"  // 纯 Go SQLite
+	_ "github.com/glebarez/go-sqlite" // 纯 Go SQLite
+	"github.com/glebarez/sqlite"
 	_ "github.com/go-sql-driver/mysql" // 纯 Go MySQL
 	_ "github.com/jackc/pgx/v5/stdlib" // 纯 Go PgSQL
-	"github.com/glebarez/sqlite"
 	"gorm.io/driver/mysql"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -23,7 +23,7 @@ func Run() {
 
 	switch env.Get("DB_TYPE") {
 	case "sqlite", "sqllite", "sqlite3":
-		dialector = sqlite.New(sqlite.Config{Conn: sql.Sql})
+		dialector = sqlite.Dialector{Conn: sql.Sql}
 
 	case "pgsql", "postgres", "postgresql":
 		dialector = postgres.New(postgres.Config{Conn: sql.Sql})
