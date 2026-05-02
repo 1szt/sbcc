@@ -2,6 +2,7 @@
 # https://github.com/github/gitignore/blob/main/community/Golang/Go.AllowList.gitignore
 #
 # Binaries for programs and plugins
+__debug_bin.*
 *.exe
 *.exe~
 *.dll
@@ -21,7 +22,7 @@ profile.cov
 # vendor/
 
 # Go workspace file
-go.work
+# go.work
 go.work.sum
 
 # env file
@@ -30,3 +31,9 @@ go.work.sum
 # Editor/IDE
 # .idea/
 # .vscode/
+
+# data directory
+data/
+
+# build directory
+build/
