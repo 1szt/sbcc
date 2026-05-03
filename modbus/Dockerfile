@@ -6,14 +6,18 @@ WORKDIR /app
 # 安装 git（某些依赖需要）
 RUN apk add --no-cache git
 
-# 复制 modbus 目录下的所有文件（包含 go.mod）
-COPY modbus/ .
+# 复制整个项目
+COPY . .
+
+# 修改 go.work 路径，使其指向 /app 目录下的模块
+# 原文件: use ./modbus -> 容器内: use ./
+RUN sed -i 's|use ./modbus|use .|' go.work
 
 # 下载依赖
 RUN go mod download
 
-# 构建可执行文件（go.mod 在当前目录，所以路径是 ./main/run.go）
-RUN CGO_ENABLED=0 GOOS=linux go build -o sbcc ./main/run.go
+# 构建可执行文件
+RUN CGO_ENABLED=0 GOOS=linux go build -o sbcc ./modbus/main/run.go
 
 # 运行阶段
 FROM alpine:3.19
@@ -25,7 +29,7 @@ RUN apk add --no-cache ca-certificates tzdata
 
 # 从构建阶段复制可执行文件和静态资源
 COPY --from=builder /app/sbcc .
-COPY --from=builder /app/static ./static
+COPY --from=builder /app/modbus/static ./static
 COPY --from=builder /app/data ./data
 
 # 创建必要目录
