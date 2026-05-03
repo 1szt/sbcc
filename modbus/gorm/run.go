@@ -1,4 +1,4 @@
-package grom
+package gorm
 
 import (
 	"fmt"
@@ -15,7 +15,7 @@ import (
 	"gorm.io/gorm"
 )
 
-var Grom *gorm.DB
+var Gorm *gorm.DB
 
 // Run 接收一个已经连接好的原生 *sql.DB 句柄和驱动名称
 func Run() {
@@ -40,7 +40,7 @@ func Run() {
 
 	// 初始化 GORM 实例
 	var err error
-	Grom, err = gorm.Open(dialector, &gorm.Config{
+	Gorm, err = gorm.Open(dialector, &gorm.Config{
 		// 这里可以根据需要配置 GORM 的行为
 		SkipDefaultTransaction: true, // 如果追求性能，可以跳过默认事务
 	})

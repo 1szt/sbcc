@@ -18,25 +18,28 @@ import (
 )
 
 func Run() {
+	// 初始化数据库
+	InitDB()
+
 	r := chi.NewRouter()
 	r.Group(func(r chi.Router) {
 		r.Get("/", sub)
 	})
 
 	web.Mux.Mount("/api/sub", r)
-	fmt.Println("🎉 [Sub] 订阅api模块 加载完成！")
+	fmt.Println("✅ [Sub] 订阅api模块 加载完成！")
 
 }
 
 func sub(w http.ResponseWriter, r *http.Request) {
 
-	// // 获取?token参数
-	// token := r.URL.Query().Get("token")
-	// if token == "" {
-	// 	w.WriteHeader(http.StatusBadRequest)
-	// 	fmt.Fprintf(w, "错误：缺少token参数。")
-	// 	return
-	// }
+	// 获取?token参数
+	token := r.URL.Query().Get("token")
+	if token == "" {
+		w.WriteHeader(http.StatusBadRequest)
+		fmt.Fprintf(w, "")
+		return
+	}
 
 	ConfigPath := "data/clash.yaml"
 

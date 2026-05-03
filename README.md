@@ -10,6 +10,9 @@
 
 ```
 sbcc/
+├── .github/
+│   └── workflows/    # GitHub Actions 工作流
+│       └── docker.yml
 ├── .vscode/          # VS Code 配置文件
 ├── modbus/           # 主应用模块
 │   ├── env/          # 环境配置系统
@@ -21,6 +24,7 @@ sbcc/
 │   ├── sqlx/         # SQLX 增强数据库层
 │   ├── sub/          # 订阅 API 模块
 │   ├── web/          # Web 引擎底座（Chi 路由）
+│   ├── Dockerfile    # Docker 构建文件
 │   ├── go.mod        # Go 依赖管理
 │   └── go.sum        # 依赖校验文件
 ├── .gitignore        # Git 忽略配置
@@ -61,6 +65,8 @@ sbcc/
 
 ## 🚀 快速开始
 
+### 本地运行
+
 ```bash
 # 进入项目目录
 cd modbus
@@ -70,6 +76,57 @@ go run main/run.go
 ```
 
 启动后访问: http://localhost:9081
+
+### Docker 运行
+
+```bash
+# 拉取镜像
+docker pull ghcr.io/你的用户名/sbcc:latest
+
+# 运行容器
+docker run -d \
+  --name sbcc \
+  -p 9081:9081 \
+  -v $(pwd)/data:/app/data \
+  ghcr.io/你的用户名/sbcc:latest
+```
+
+### Docker Compose
+
+```yaml
+version: '3.8'
+services:
+  sbcc:
+    image: ghcr.io/你的用户名/sbcc:latest
+    container_name: sbcc
+    ports:
+      - "9081:9081"
+    volumes:
+      - ./data:/app/data
+    restart: unless-stopped
+```
+
+---
+
+## 🔄 CI/CD 自动构建
+
+本项目使用 **GitHub Actions** 实现自动构建和发布。
+
+### 构建流程
+
+| 事件 | 触发条件 | 操作 |
+|------|---------|------|
+| `push` to `main` | 代码合并到主分支 | 构建并推送 `latest` 标签镜像 |
+| `push` tag `v*` | 发布版本标签 | 构建并推送 `v*.*.*` 和 `latest` 标签镜像 |
+| `pull_request` | PR 创建/更新 | 构建测试镜像（不推送） |
+
+### GitHub Packages 镜像
+
+| 标签 | 说明 | 拉取命令 |
+|------|------|---------|
+| `latest` | 最新稳定版 | `docker pull ghcr.io/你的用户名/sbcc:latest` |
+| `v1.0.0` | 指定版本 | `docker pull ghcr.io/你的用户名/sbcc:v1.0.0` |
+| `sha-abc1234` | Commit ID | `docker pull ghcr.io/你的用户名/sbcc:sha-abc1234` |
 
 ---
 
@@ -96,6 +153,7 @@ go run main/run.go
 - **ORM**: [GORM](https://gorm.io/)
 - **SQL 增强**: [SQLX](https://github.com/jmoiron/sqlx)
 - **限流**: [httprate](https://github.com/go-chi/httprate)
+- **容器化**: Docker
 
 ---
 

@@ -44,7 +44,7 @@ func Run() {
 			fmt.Printf("✅ [SQL] 数据库模块 数据库文件创建成功！%s\n", env.Get("DB_NAME"))
 		}
 		// SQLite 配置
-		dsn = fmt.Sprintf("file:%s?mode=ro&cache=shared", env.Get("DB_NAME"))
+		dsn = fmt.Sprintf("file:%s?mode=rwc&cache=shared", env.Get("DB_NAME"))
 		driver = "sqlite"
 	case "pgsql", "postgres", "postgresql":
 		// pgsql 配置
