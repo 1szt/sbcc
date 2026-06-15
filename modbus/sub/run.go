@@ -1,14 +1,14 @@
 package sub
 
-// 依赖模块 ：web
+// 依赖模块 ：chi
 // 订阅api模块
 // 订阅api模块负责处理用户访问订阅api路径的请求
 // 挂载路径："/api/sub"
 
 import (
 	"fmt"
+	web "modbus/chi"
 	"modbus/gorm"
-	"modbus/web"
 	"net/http"
 	"net/url"
 	"os"
@@ -115,15 +115,15 @@ func sub(w http.ResponseWriter, r *http.Request) {
 }
 
 func subNode(w http.ResponseWriter, r *http.Request) {
-    // 获取?token参数
-    token := r.URL.Query().Get("token")
+	// 获取?token参数
+	token := r.URL.Query().Get("token")
 
-    // 1. 校验 Token
-    if token != "caj8r79cejyrl3gph4cs5c5ox6cjdph1" {
-        // Token 不对，直接报 403 Forbidden 或 401
-        http.Error(w, "Unauthorized access", http.StatusUnauthorized)
-        return
-    }
+	// 1. 校验 Token
+	if token != "caj8r79cejyrl3gph4cs5c5ox6cjdph1" {
+		// Token 不对，直接报 403 Forbidden 或 401
+		http.Error(w, "Unauthorized access", http.StatusUnauthorized)
+		return
+	}
 
 	ConfigPath := "data/1szt.yaml"
 
@@ -136,7 +136,7 @@ func subNode(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-    // 4. 返回文件
-    // http.ServeFile 会自动处理 Content-Type 和绝对路径转换
-    http.ServeFile(w, r, absPath)
+	// 4. 返回文件
+	// http.ServeFile 会自动处理 Content-Type 和绝对路径转换
+	http.ServeFile(w, r, absPath)
 }

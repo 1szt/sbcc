@@ -5,8 +5,8 @@ package podman
 
 import (
 	"fmt"
+	web "modbus/chi"
 	"modbus/podman/home"
-	"modbus/web"
 
 	"github.com/go-chi/chi/v5"
 )
@@ -23,5 +23,5 @@ func Run() {
 
 	// 最后一炮打到web底座，搞定！
 	web.Mux.Mount("/podman", r)
-	fmt.Println("🏠 [Podman] 模块 加载完成！")
+	fmt.Println("✅ [Podman] 模块 加载完成！")
 }
