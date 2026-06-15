@@ -13,7 +13,7 @@ import (
 	_ "github.com/jackc/pgx/v5/stdlib" // 纯 Go PgSQL
 )
 
-var Sql *sql.DB
+var DB *sql.DB
 
 func Run() {
 	// 一次性初始化数据库配置
@@ -63,7 +63,7 @@ func Run() {
 	}
 
 	var err error
-	Sql, err = sql.Open(driver, dsn)
+	DB, err = sql.Open(driver, dsn)
 	if err != nil {
 		fmt.Printf("⚠️ [SQL] 数据库模块 配置错误！err: %v\n", err)
 	}
@@ -74,7 +74,7 @@ func Run() {
 	// 开始无限循环重连
 	for {
 
-		err = Sql.Ping()
+		err = DB.Ping()
 		if err == nil {
 			fmt.Printf("✅ [SQL] 数据库 连接成功！\n")
 			break // 连上了，跳出循环
@@ -86,7 +86,7 @@ func Run() {
 	}
 
 	// 设置连接池（连上后再设置）
-	Sql.SetMaxOpenConns(100)
-	Sql.SetMaxIdleConns(20)
+	DB.SetMaxOpenConns(100)
+	DB.SetMaxIdleConns(20)
 
 }

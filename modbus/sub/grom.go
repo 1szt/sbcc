@@ -19,7 +19,7 @@ func (Sub) TableName() string {
 // 初始化数据库
 func InitDB() {
 	// 自动创建不存在的表
-	err := gorm.Gorm.AutoMigrate(&Sub{})
+	err := gorm.DB.AutoMigrate(&Sub{})
 	if err != nil {
 		fmt.Println("✅ [Sub] gorm 数据库表迁移失败:", err)
 	} else {

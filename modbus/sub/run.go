@@ -59,7 +59,7 @@ func sub(w http.ResponseWriter, r *http.Request) {
 	// 从数据库查询token是否存在
 	var sub Sub
 
-	err := gorm.Gorm.Where("token = ?", token).First(&sub).Error
+	err := gorm.DB.Where("token = ?", token).First(&sub).Error
 	if err != nil {
 		// 返回404错误页面
 		http.NotFound(w, r)
