@@ -14,16 +14,17 @@ sbcc/
 │   └── workflows/    # GitHub Actions 工作流
 │       └── docker.yml
 ├── .vscode/          # VS Code 配置文件
-├── modbus/           # 主应用模块
-│   ├── env/          # 环境配置系统
-│   ├── gin/          # Gin 框架示例模块（演示 Chi + Gin 混合使用）
-│   ├── grom/         # GORM ORM 数据库层
-│   ├── home/         # 主页模块
-│   ├── main/         # 程序入口
+├── modbus/           # 通用模块库
+│   ├── chi/          # Chi 框架 Web 引擎底座
+│   ├── gin/          # Gin 框架示例模块
+│   ├── gorm/         # GORM ORM 数据库层
 │   ├── sql/          # 原生 SQL 数据库连接层
 │   ├── sqlx/         # SQLX 增强数据库层
+│   ├── env/          # 环境配置系统
+│   ├── home/         # 主页模块
+│   ├── podman/       # Podman 控制模块
 │   ├── sub/          # 订阅 API 模块
-│   ├── web/          # Web 引擎底座（Chi 路由）
+│   ├── main/         # 程序入口
 │   ├── Dockerfile    # Docker 构建文件
 │   ├── go.mod        # Go 依赖管理
 │   └── go.sum        # 依赖校验文件
@@ -36,19 +37,79 @@ sbcc/
 
 ---
 
-## 📋 目录作用说明
+## 📋 模块说明
+
+### 🔧 框架层（Framework）
 
 | 目录 | 作用 | 状态 |
 |------|------|------|
-| `modbus/main/` | 程序入口，负责启动所有模块 | ✅ 核心 |
-| `modbus/web/` | **Web 引擎底座**，使用 Chi 路由库，提供中间件、限流、日志等基础能力 | ✅ 核心 |
-| `modbus/env/` | **环境配置系统**，自动创建 `.env` 文件，支持环境变量覆盖 | ✅ 核心 |
+| `modbus/chi/` | **Web 引擎底座**，使用 Chi 路由库，提供中间件、限流、日志等基础能力 | ✅ 核心 |
+| `modbus/gin/` | **Gin 混合示例**，演示如何在 Chi 主路由上挂载 Gin 子应用 | 🧪 实验 |
+| `modbus/gorm/` | **GORM ORM 层**，提供对象关系映射能力，支持事务、预加载等 | ✅ 核心 |
 | `modbus/sql/` | **原生 SQL 连接层**，支持 SQLite/MySQL/PostgreSQL，带自动重连机制 | ✅ 核心 |
 | `modbus/sqlx/` | **SQLX 增强层**，在原生连接基础上包装，支持命名参数等高级特性 | ✅ 扩展 |
-| `modbus/grom/` | **GORM ORM 层**，提供对象关系映射能力，支持事务、预加载等 | ✅ 扩展 |
-| `modbus/home/` | **主页模块**，处理根路径 `/` 的请求，演示如何挂载子路由 | ✅ 示例 |
+
+### 🎯 业务层（Business）
+
+| 目录 | 作用 | 状态 |
+|------|------|------|
+| `modbus/home/` | **主页模块**，处理根路径 `/` 的请求，演示如何挂载子路由 | ✅ 业务 |
+| `modbus/podman/` | **Podman 控制模块**，提供容器管理界面 | ✅ 业务 |
 | `modbus/sub/` | **订阅 API 模块**，提供 Clash 配置订阅服务，支持流量统计、到期时间等 | ✅ 业务 |
-| `modbus/gin/` | **Gin 混合示例**，演示如何在 Chi 主路由上挂载 Gin 子应用 | 🧪 实验 |
+
+### ⚙️ 基础设施（Infrastructure）
+
+| 目录 | 作用 | 状态 |
+|------|------|------|
+| `modbus/env/` | **环境配置系统**，自动创建 `.env` 文件，支持环境变量覆盖 | ✅ 核心 |
+| `modbus/main/` | **程序入口**，负责启动所有模块 | ✅ 核心 |
+
+---
+
+## 🚀 命名规范
+
+### 包引用规范
+
+```go
+import (
+    chi "github.com/go-chi/chi/v5"  // Chi 框架包（别名）
+    web "modbus/chi"                 // modbus 模块（别名）
+    db "modbus/sql"                  // 数据库模块
+)
+```
+
+### 变量命名规范
+
+所有数据库模块统一使用 `DB` 变量名：
+
+```go
+sql.DB    // 原生数据库连接
+sqlx.DB   // sqlx 增强连接
+gorm.DB   // GORM ORM 实例
+```
+
+### 模块启动规范
+
+所有模块遵循统一的 `.Run()` 接口：
+
+```go
+func main() {
+    // Web 引擎启动
+    web.Run()
+
+    // 数据库模块启动
+    db.Run()
+    sqlx.Run()
+    gorm.Run()
+
+    // 功能模块启动
+    home.Run()
+    podman.Run()
+    sub.Run()
+
+    select {} // 阻塞主进程
+}
+```
 
 ---
 
@@ -60,6 +121,7 @@ sbcc/
 - **自动配置**: `.env` 文件自动生成，无需手动创建
 - **优雅启动**: 端口占用检测、模块状态反馈
 - **高可用设计**: 数据库自动重连机制
+- **模块化架构**: 新增功能只需添加 `.Run()` 方法
 
 ---
 
@@ -68,7 +130,6 @@ sbcc/
 ### 本地运行
 
 ```bash
-
 # 启动应用
 go run modbus/main/run.go
 ```
@@ -115,7 +176,7 @@ services:
 | 事件 | 触发条件 | 操作 |
 |------|---------|------|
 | `push` to `main` | 代码合并到主分支 | 构建并推送 `latest` 标签镜像 |
-| `push` tag `v*` | 发布版本标签 | 构建并推送 `v*.*.*` 和 `latest` 标签镜像 |
+| `push tag `v*` | 发布版本标签 | 构建并推送 `v*.*.*` 和 `latest` 标签镜像 |
 | `pull_request` | PR 创建/更新 | 构建测试镜像（不推送） |
 
 ### GitHub Packages 镜像
