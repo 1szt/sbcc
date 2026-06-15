@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"modbus/gorm"
 	"modbus/home"
+	"modbus/podman"
 	"modbus/sql"
 	"modbus/sqlx"
 	"modbus/sub"
@@ -28,6 +29,7 @@ func main() {
 	// 功能模块启动
 	home.Run()
 	sub.Run()
+	podman.Run()
 
 	// gin.Run()
 
