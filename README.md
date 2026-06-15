@@ -25,12 +25,12 @@ sbcc/
 │   ├── podman/       # Podman 控制模块
 │   ├── sub/          # 订阅 API 模块
 │   ├── main/         # 程序入口
-│   ├── Dockerfile    # Docker 构建文件
 │   ├── go.mod        # Go 依赖管理
 │   └── go.sum        # 依赖校验文件
 ├── .gitignore        # Git 忽略配置
 ├── LICENSE           # 许可证文件
 ├── README.md         # 项目说明文档
+├── Dockerfile        # Docker 构建文件
 ├── build.bat         # Windows 构建脚本
 └── go.work           # Go 工作区配置
 ```
