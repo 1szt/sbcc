@@ -22,7 +22,7 @@ func main() {
 	log.Print("========================================")
 	log.Print("正在启动各个模块...")
 
-	// Web 引擎启动
+	// chi 引擎启动
 	chi.Run()
 	// gRPC 服务启动
 	grpc.Run()
