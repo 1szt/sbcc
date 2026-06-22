@@ -122,6 +122,38 @@ func Get(key string) string {
 	return ""
 }
 
+// GetConfig 仅从配置文件读取值，不检查系统环境变量
+// 适用于明确需要读取 .env 文件内容的场景
+func GetConfig(key string) string {
+	f, err := os.Open(fileName)
+	if err != nil {
+		return ""
+	}
+	defer f.Close()
+
+	scanner := bufio.NewScanner(f)
+	for scanner.Scan() {
+		line := scanner.Text()
+
+		if strings.HasPrefix(line, "#") || strings.TrimSpace(line) == "" {
+			continue
+		}
+
+		if strings.HasPrefix(line, key+"=") {
+			parts := strings.SplitN(line, "=", 2)
+			if len(parts) == 2 {
+				return parts[1]
+			}
+		}
+	}
+
+	if err := scanner.Err(); err != nil {
+		return ""
+	}
+
+	return ""
+}
+
 // Set 修改或新增配置项
 //
 // 逻辑：
