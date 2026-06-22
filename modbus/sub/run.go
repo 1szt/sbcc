@@ -7,6 +7,7 @@ package sub
 
 import (
 	"fmt"
+	"log"
 	web "modbus/chi"
 	"modbus/gorm"
 	"net/http"
@@ -30,7 +31,7 @@ func Run() {
 	})
 
 	web.Mux.Mount("/api/sub", r)
-	fmt.Println("✅ [Sub] 订阅api模块 加载完成！")
+	log.Print("✅ [Sub] 订阅api模块 加载完成！")
 
 }
 

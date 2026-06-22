@@ -1,26 +1,31 @@
 package main
 
 import (
-	"fmt"
+	"log"
+	"modbus/chi"
 	"modbus/gorm"
+	"modbus/grpc"
 	"modbus/home"
 	"modbus/podman"
 	"modbus/sql"
 	"modbus/sqlx"
 	"modbus/sub"
-	"modbus/chi"
 )
 
 func main() {
+	// 配置日志格式：只显示时间 HH:MM:SS，不显示完整日期
+	log.SetFlags(log.Ltime | log.Lmsgprefix)
 
 	// motd
-	fmt.Println("========================================")
-	fmt.Println("             SBCC 控制中心启动！          ")
-	fmt.Println("========================================")
-	fmt.Println("正在启动各个模块...")
+	log.Print("========================================")
+	log.Print("             SBCC 控制中心启动！          ")
+	log.Print("========================================")
+	log.Print("正在启动各个模块...")
 
 	// Web 引擎启动
 	chi.Run()
+	// gRPC 服务启动
+	grpc.Run()
 
 	// 数据库模块启动
 	sql.Run()

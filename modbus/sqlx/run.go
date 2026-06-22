@@ -1,10 +1,9 @@
 package sqlx
 
 import (
-	"fmt"
+	"log"
 	"modbus/env"
 	"modbus/sql"
-	"os"
 	"time"
 
 	"github.com/jmoiron/sqlx"
@@ -26,9 +25,7 @@ func Run() {
 	case "mysql", "mariadb":
 		driver = "mysql"
 	default:
-		fmt.Printf("⚠️ [SQLX] 数据库模块 配置错误！无法识别的数据库类型:%s\n", env.Get("DB_TYPE"))
-		// 程序退出
-		os.Exit(1)
+		log.Fatalf("⚠️ [SQLX] 数据库模块 配置错误！无法识别的数据库类型:%s", env.Get("DB_TYPE"))
 		return
 	}
 	// 直接使用已经连接成功的 Sql 实例进行包装
@@ -43,10 +40,10 @@ func Run() {
 		// 测试连接
 		err := DB.Ping()
 		if err == nil {
-			fmt.Printf("✅ [SQLX] 数据库模块 连接成功！\n")
+			log.Printf("✅ [SQLX] 数据库模块 连接成功！")
 			break // 连上了，跳出循环
 		}
-		fmt.Printf("🔄 [SQLX] 数据库连接失败: %v。 9秒后尝试重连...\n", err)
+		log.Printf("🔄 [SQLX] 数据库连接失败: %v。 9秒后尝试重连...", err)
 		time.Sleep(9 * time.Second)
 
 	}

@@ -3,6 +3,7 @@ package sql
 import (
 	"database/sql"
 	"fmt"
+	"log"
 
 	"modbus/env"
 	"os"
@@ -36,12 +37,10 @@ func Run() {
 			// 创建文件
 			_, err = os.Create(env.Get("DB_NAME"))
 			if err != nil {
-				fmt.Printf("⚠️ [SQL] 数据库模块 配置错误！创建数据库文件失败！err: %v\n", err)
-				// 程序退出
-				os.Exit(1)
+				log.Fatalf("⚠️ [SQL] 数据库模块 配置错误！创建数据库文件失败！err: %v", err)
 				return
 			}
-			fmt.Printf("✅ [SQL] 数据库模块 数据库文件创建成功！%s\n", env.Get("DB_NAME"))
+			log.Printf("✅ [SQL] 数据库模块 数据库文件创建成功！%s", env.Get("DB_NAME"))
 		}
 		// SQLite 配置
 		dsn = fmt.Sprintf("file:%s?mode=rwc&cache=shared", env.Get("DB_NAME"))
@@ -56,16 +55,14 @@ func Run() {
 		driver = "mysql"
 	default:
 		// 无法识别 程序退出
-		fmt.Printf("⚠️ [SQL] 数据库模块 配置错误！无法识别的数据库类型:%s\n", env.Get("DB_TYPE"))
-		// 程序退出
-		os.Exit(1)
+		log.Fatalf("⚠️ [SQL] 数据库模块 配置错误！无法识别的数据库类型:%s", env.Get("DB_TYPE"))
 		return
 	}
 
 	var err error
 	DB, err = sql.Open(driver, dsn)
 	if err != nil {
-		fmt.Printf("⚠️ [SQL] 数据库模块 配置错误！err: %v\n", err)
+		log.Printf("⚠️ [SQL] 数据库模块 配置错误！err: %v", err)
 	}
 
 	// 间隔2s
@@ -76,11 +73,11 @@ func Run() {
 
 		err = DB.Ping()
 		if err == nil {
-			fmt.Printf("✅ [SQL] 数据库 连接成功！\n")
+			log.Printf("✅ [SQL] 数据库 连接成功！")
 			break // 连上了，跳出循环
 		}
 
-		fmt.Printf("🔄 [SQL] 数据库连接失败: %v。 9秒后尝试重连...\n", err)
+		log.Printf("🔄 [SQL] 数据库连接失败: %v。 9秒后尝试重连...", err)
 		time.Sleep(9 * time.Second)
 		// fmt.Printf("❌ [SQL] 数据库 重连中...\n")
 	}

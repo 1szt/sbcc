@@ -1,10 +1,9 @@
 package gorm
 
 import (
-	"fmt"
+	"log"
 	"modbus/env"
 	"modbus/sql"
-	"os"
 
 	_ "github.com/glebarez/go-sqlite" // 纯 Go SQLite
 	"github.com/glebarez/sqlite"
@@ -32,9 +31,7 @@ func Run() {
 		dialector = mysql.New(mysql.Config{Conn: sql.DB})
 
 	default:
-		fmt.Printf("⚠️ [GROM] 数据库模块 配置错误！无法识别的数据库类型:%s\n", env.Get("DB_TYPE"))
-		// 程序退出
-		os.Exit(1)
+		log.Fatalf("⚠️ [GROM] 数据库模块 配置错误！无法识别的数据库类型:%s", env.Get("DB_TYPE"))
 		return
 	}
 
@@ -46,8 +43,8 @@ func Run() {
 	})
 
 	if err != nil {
-		fmt.Printf("❌ [GORM] 绑定原生连接失败: %v\n", err)
+		log.Printf("❌ [GORM] 绑定原生连接失败: %v", err)
 	}
 
-	fmt.Printf("✅ [GORM] 已成功挂载到原生 %s 连接池\n", env.Get("DB_TYPE"))
+	log.Printf("✅ [GORM] 已成功挂载到原生 %s 连接池", env.Get("DB_TYPE"))
 }
