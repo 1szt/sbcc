@@ -4,10 +4,9 @@ package chi
 // 使用 chi 路由库
 
 import (
-	"fmt"
+	"log"
 	"modbus/env"
 	"net/http"
-	"os"
 	"time"
 
 	"github.com/go-chi/chi/v5"
@@ -21,7 +20,7 @@ func Run() {
 
 	// 一次性初始化配置文件
 	env.Init([][]string{
-		{"WEB_PORT", "9081", "端口"},
+		{"CHI_PORT", "9081", "端口"},
 	})
 
 	// 全局中间件设置
@@ -38,7 +37,7 @@ func Run() {
 
 	// 协程启动
 	go func() {
-		if err := http.ListenAndServe(":"+env.Get("WEB_PORT"), Mux); err != nil {
+		if err := http.ListenAndServe(":"+env.Get("CHI_PORT"), Mux); err != nil {
 			errChan <- err
 		}
 	}()
@@ -47,13 +46,12 @@ func Run() {
 	select {
 	case err := <-errChan:
 		// 如果通道里有错，说明端口启动失败（如 Address already in use）
-		fmt.Printf("❌ [Web] 致命错误：端口可能被占用或权限不足 | %v\n", err)
-		os.Exit(1)
+		log.Fatalf("❌ [Chi] 致命错误：端口可能被占用或权限不足 | %v", err)
 		return
 	case <-time.After(100 * time.Millisecond):
 		// 100ms 过去了没报错，说明端口占领成功
-		fmt.Printf("✅ [Web] %s端口占领成功，底座已就绪\n", env.Get("WEB_PORT"))
-		fmt.Printf("🌐 [Web] 访问 http://localhost:%s\n", env.Get("WEB_PORT"))
+		log.Printf("✅ [Chi] %s端口占领成功，底座已就绪", env.Get("CHI_PORT"))
+		log.Printf("🌐 [Chi] 访问 http://localhost:%s", env.Get("CHI_PORT"))
 	}
 
 }

@@ -1,7 +1,7 @@
 package sub
 
 import (
-	"fmt"
+	"log"
 	"modbus/gorm"
 )
 
@@ -21,8 +21,8 @@ func InitDB() {
 	// 自动创建不存在的表
 	err := gorm.DB.AutoMigrate(&Sub{})
 	if err != nil {
-		fmt.Println("✅ [Sub] gorm 数据库表迁移失败:", err)
+		log.Printf("✅ [Sub] gorm 数据库表迁移失败: %v", err)
 	} else {
-		fmt.Println("✅ [Sub] gorm 数据库表迁移成功")
+		log.Print("✅ [Sub] gorm 数据库表迁移成功")
 	}
 }
