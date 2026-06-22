@@ -121,3 +121,44 @@ func Get(key string) string {
 
 	return ""
 }
+
+// Set 修改或新增配置项
+//
+// 逻辑：
+//  1. 读取现有文件，逐行扫描
+//  2. 找到 key= 则替换为新的 key=value（保留注释）
+//  3. 没找到则在文件末尾追加 key=value
+//  4. 写回文件
+func Set(key, value string) error {
+	// 1. 读取文件全部内容
+	existingContent, err := os.ReadFile(fileName)
+	if err != nil {
+		// 文件不存在，直接创建新文件写入
+		return os.WriteFile(fileName, []byte(key+"="+value+"\n"), 0644)
+	}
+
+	lines := strings.Split(string(existingContent), "\n")
+	found := false
+
+	// 2. 逐行扫描，替换已有 key
+	for i, line := range lines {
+		// 跳过注释和空行
+		if strings.HasPrefix(line, "#") || strings.TrimSpace(line) == "" {
+			continue
+		}
+		// 匹配 key=
+		if strings.HasPrefix(line, key+"=") {
+			lines[i] = key + "=" + value
+			found = true
+			break
+		}
+	}
+
+	// 3. 没找到则追加
+	if !found {
+		lines = append(lines, key+"="+value)
+	}
+
+	// 4. 写回文件
+	return os.WriteFile(fileName, []byte(strings.Join(lines, "\n")), 0644)
+}
