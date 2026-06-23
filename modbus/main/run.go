@@ -9,6 +9,7 @@ import (
 	"modbus/sql"
 	"modbus/sqlx"
 	"modbus/sub"
+	"modbus/websocket"
 )
 
 func main() {
@@ -35,6 +36,9 @@ func main() {
 	home.Run()
 	sub.Run()
 	podman.Run()
+
+	// WebSocket 服务启动
+	websocket.Run()
 
 	// gin.Run()
 
