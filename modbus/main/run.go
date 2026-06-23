@@ -4,7 +4,6 @@ import (
 	"log"
 	"modbus/chi"
 	"modbus/gorm"
-	"modbus/grpc"
 	"modbus/home"
 	"modbus/podman"
 	"modbus/sql"
@@ -24,8 +23,8 @@ func main() {
 
 	// chi 引擎启动
 	chi.Run()
-	// gRPC 服务启动
-	grpc.Run()
+	// // gRPC 服务启动
+	// grpc.Run()
 
 	// 数据库模块启动
 	sql.Run()
